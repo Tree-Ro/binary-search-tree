@@ -1,0 +1,19 @@
+{
+  "name": "binary-search-tree",
+  "version": "1.0.0",
+  "description": "A mini project created to implement a binary search tree in Javascript and through this further understand how a bst works.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.3.0",
+    "eslint": "^9.3.0",
+    "globals": "^15.2.0",
+    "nodemon": "^3.1.0"
+  }
+}
