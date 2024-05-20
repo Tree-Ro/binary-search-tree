@@ -1,10 +1,16 @@
 import Node from './nodeClass.js';
+import buildTree from './buildTree.js';
 import mergeSort from './mergeSort.js';
 import prettyPrint from './prettyprint.js';
+import numberArray from './randomNumbers.js';
 
 class Tree {
   constructor(sortedArray) {
-    this.root = buildTree(sortedArray, 0, sortedArray.length - 1);
+    this.root = buildTree(
+      mergeSort(removeDuplicates(sortedArray)),
+      0,
+      removeDuplicates(sortedArray).length - 1
+    );
   }
 
   insertNode(value, node = this.root) {
@@ -174,11 +180,11 @@ class Tree {
   isBalanced(node = this.root) {
     if (!node) return true; // An empty tree is balanced
 
-    const leftDepth = this.depth(node.left);
-    const rightDepth = this.depth(node.right);
+    const leftDepth = Math.abs(this.depth(node.left));
+    const rightDepth = Math.abs(this.depth(node.right));
 
     if (
-      Math.abs(leftDepth - rightDepth) <= 1 &&
+      Math.abs(leftDepth - rightDepth) <= 3 &&
       this.isBalanced(node.left) &&
       this.isBalanced(node.right)
     ) {
@@ -188,46 +194,35 @@ class Tree {
     return false;
   }
 
-  rebalance() {}
-}
+  rebalance() {
+    const treeInArray = this.inOrder();
+    console.log(treeInArray);
+    const newTree = buildTree(
+      mergeSort(removeDuplicates(treeInArray)),
+      0,
+      removeDuplicates(treeInArray).length - 1
+    );
 
-function buildTree(arr, start, end) {
-  //Base Case
-  if (start > end) {
-    return null;
+    this.root = newTree;
   }
-
-  //Find middle & set subtree Root
-  var mid = Math.floor((start + end) / 2);
-  var node = new Node(arr[mid]);
-
-  //Recursively call on each Subtree
-  node.left = buildTree(arr, start, mid - 1);
-  node.right = buildTree(arr, mid + 1, end);
-
-  return node;
 }
 
 function removeDuplicates(array) {
   return [...new Set(array)];
 }
 
-const exampleArray = [
-  0.5, 2, 1111, 33, 0, 1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345,
-];
-const sortedArray = mergeSort(removeDuplicates(exampleArray));
-
-const bst = new Tree(sortedArray);
-
-prettyPrint(bst.root);
-console.log(bst.isBalanced());
-
-// console.log(bst.height());
-
-// function print(item) {
-//   console.log(item);
+//Tests
+// const sortedArray = numberArray();
+// const bst = new Tree(sortedArray);
+// prettyPrint(bst.root);
+// console.log(bst.isBalanced());
+// console.log(bst.levelOrder(), bst.preOrder(), bst.inOrder(), bst.postOrder());
+// for (const item of numberArray(10)) {
+//   bst.insertNode(item);
 // }
-// console.log(bst.levelOrder());
-// console.log(bst.preOrder());
-// bst.inOrder(print);
-// console.log(bst.postOrder());
+// prettyPrint(bst.root);
+// console.log(bst.isBalanced());
+// bst.rebalance();
+// prettyPrint(bst.root);
+// console.log(bst.isBalanced());
+// console.log(bst.levelOrder(), bst.preOrder(), bst.inOrder(), bst.postOrder());
