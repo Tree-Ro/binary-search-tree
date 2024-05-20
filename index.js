@@ -82,19 +82,111 @@ class Tree {
     return result;
   }
 
-  levelOrder(callback) {}
+  //Doesnt actually work due to callback(queue.shift())
+  //being called despite there being no items in the queue and thus providing the callback with an undefined item
+  levelOrder(
+    callback = () => {
+      return null;
+    },
+    node = this.root
+  ) {
+    let queue = [node];
+    let treeArray = [];
 
-  inOrder(callback) {}
+    //while has item
+    while (queue.length > 0) {
+      let currentNode = queue.shift();
 
-  preOrder(callback) {}
+      if (currentNode !== null) {
+        treeArray.push(currentNode.data);
+        callback(currentNode.data);
 
-  postOrder(value) {}
+        if (currentNode.left !== null) {
+          queue.push(currentNode.left);
+        }
+        if (currentNode.right !== null) {
+          queue.push(currentNode.right);
+        }
+      }
+    }
+    return callback() === null ? treeArray : undefined;
+  }
 
-  height(node) {}
+  inOrder(callback = null, node = this.root, array = []) {
+    if (node === null) return;
+    this.inOrder(callback, node.left, array);
 
-  depth(node) {}
+    array.push(node.data);
+    if (callback) callback(node.data);
 
-  isBalanced() {}
+    this.inOrder(callback, node.right, array);
+
+    if (callback === null) return array;
+  }
+
+  preOrder(callback = null, node = this.root, array = []) {
+    if (node === null) return;
+
+    array.push(node.data);
+    if (callback) callback(node.data);
+
+    this.preOrder(callback, node.left, array);
+    this.preOrder(callback, node.right, array);
+
+    if (callback === null) return array;
+  }
+
+  postOrder(callback = null, node = this.root, array = []) {
+    if (node === null) return;
+
+    this.postOrder(callback, node.left, array);
+    this.postOrder(callback, node.right, array);
+
+    array.push(node.data);
+    if (callback) callback(node.data);
+
+    if (callback === null) return array;
+  }
+
+  height(node = this.root, count = -1) {
+    if (!node) return count;
+
+    const left = this.height(node.left, count + 1);
+    const right = this.height(node.right, count + 1);
+
+    return right > left ? right : left;
+  }
+
+  depth(target, node = this.root, count = 0) {
+    if (!node) return -1;
+
+    if (node === target) return count;
+
+    const leftDepth = this.depth(target, node.left, count + 1);
+    if (leftDepth !== -1) return leftDepth;
+
+    const rightDepth = this.depth(target, node.right, count + 1);
+    if (rightDepth !== -1) return rightDepth;
+
+    return -1;
+  }
+
+  isBalanced(node = this.root) {
+    if (!node) return true; // An empty tree is balanced
+
+    const leftDepth = this.depth(node.left);
+    const rightDepth = this.depth(node.right);
+
+    if (
+      Math.abs(leftDepth - rightDepth) <= 1 &&
+      this.isBalanced(node.left) &&
+      this.isBalanced(node.right)
+    ) {
+      return true;
+    }
+
+    return false;
+  }
 
   rebalance() {}
 }
@@ -120,13 +212,22 @@ function removeDuplicates(array) {
   return [...new Set(array)];
 }
 
-const exampleArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6250, 324];
+const exampleArray = [
+  0.5, 2, 1111, 33, 0, 1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345,
+];
 const sortedArray = mergeSort(removeDuplicates(exampleArray));
 
 const bst = new Tree(sortedArray);
 
-bst.insertNode(7000);
-bst.insertNode(6500);
-console.log(bst.deleteNode(8));
-console.log(bst.deleteNode(6500));
 prettyPrint(bst.root);
+console.log(bst.isBalanced());
+
+// console.log(bst.height());
+
+// function print(item) {
+//   console.log(item);
+// }
+// console.log(bst.levelOrder());
+// console.log(bst.preOrder());
+// bst.inOrder(print);
+// console.log(bst.postOrder());
